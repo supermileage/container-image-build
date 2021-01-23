@@ -1,0 +1,67 @@
+name: Build and publish images to ghcr.io
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  compile-variable-directories:
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.get-directories.outputs.dirs }}
+    steps:
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Parse directories
+        id: parse-directories
+        # The command here lists all directories in pwd, strips the trailing forward slash, adds them to a JSON array (while filtering nulls), then escapes quotes
+        run: echo "::set-output name=raw-dirs::$(ls -d */ | sed 's/.$//' | jq -c --raw-input --slurp 'split("\n") | map(select(. !=""))' | sed 's/\"/\\\"/g')"
+        shell: bash
+
+      - name: Output directories
+        id: get-directories
+        run: echo "::set-output name=dirs::${{ steps.parse-directories.outputs.raw-dirs }}"
+        shell: bash
+
+  build-image:
+    needs: compile-variable-directories
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dir: ${{ fromJson(needs.compile-variable-directories.outputs.dirs) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.CR_USER }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./${{ matrix.dir }}
+          file: ./${{ matrix.dir }}/Dockerfile
+          push: true
+          tags: ghcr.io/supermileage/${{ matrix.dir }}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
