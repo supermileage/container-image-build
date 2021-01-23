@@ -1,6 +1,6 @@
-# Container Image Build Workflows
+# Container Image Build Workflow
 
-This repo serves as a centralized build hub for the container images that Supermileage uses for compilation.
+This repo serves as a centralized build hub for the container images that Supermileage uses for compilation. Images will only be built if contents in their respective directories have changed.
 
 ## Setup
 
@@ -12,8 +12,6 @@ To add a new image, simply add a new directory (named what you want the package 
 
 Refer to [hello-world](hello-world/) to see how it works.
 
-# Caveats
-
-## Directories
+## Note About Directories
 
 Since the workflow scans the repo for non-hidden directories to build images in parallel, non-image directories should be avoided. If a directory needs to be added to the repo, prepend it with `.` to mark it as hidden.
