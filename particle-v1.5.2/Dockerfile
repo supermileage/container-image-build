@@ -26,8 +26,6 @@ ENV PATH=$PATH:/usr/local/gcc-arm/bin
 
 WORKDIR firmware/main
 
-ENTRYPOINT ["/bin/bash"]
-
 # Our default command to run, which is to target the electron with the app-dir and target-dir set
 CMD ["make", "all", "PLATFORM=electron", "APPDIR=../../app", "TARGET_DIR=../../out"]
 
