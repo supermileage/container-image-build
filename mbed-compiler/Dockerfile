@@ -43,7 +43,7 @@ ENV LC_ALL en_US.UTF-8
 
 ENV MBEDDIR=/code
 WORKDIR ${MBEDDIR}
-RUN git clone https://github.com/supermileage/MbedFirmware
+RUN git clone --single-branch --branch docker-skeleton --depth 1 https://github.com/supermileage/MbedFirmware
 ENV MBEDDIR=${MBEDDIR}/MbedFirmware
 WORKDIR ${MBEDDIR}
 RUN mbed deploy
@@ -71,7 +71,7 @@ ENV FIG=FALSE
 # build command
 CMD \
     # New user creation and permission changes
-    # create_user; \
+    create_user; \
     # Run rest of commands as new user
     # runuser ${USERNAME} -p -c " \
     SRCS=$(echo $SRCS | tr ':' '\n'); \
@@ -89,6 +89,7 @@ CMD \
         cat; \
     fi && \
     mv ./BUILD/NUCLEO_L432KC/GCC_ARM/${COMPILENAME}.bin /output && \
+    chown -v ${USERNAME}:${GROUP} /output/${COMPILENAME}.bin && \
     echo output && \
     ls /output && \
     if [[ "$COW" == "none" ]]; then \

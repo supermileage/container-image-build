@@ -29,6 +29,6 @@ done
 echo "Creating user '${USERNAME}' with UID ${UID} in group '${GROUP}' with GID ${GID}"
 groupadd -g ${GID} ${GROUP}
 useradd -g ${GID} -m -s /bin/bash -u ${UID} ${USERNAME}
-echo "Changing permissions in repo"
-chown -Rv ${USERNAME}:${GROUP}  /code | \
-   pv -p -e -f -c -l -s $(find |wc -l) 2>&1 >/dev/null
+# echo "Changing permissions in repo"
+# chown -Rv ${USERNAME}:${GROUP}  /code | \
+#    pv -p -e -f -c -l -s $(find |wc -l) 2>&1 >/dev/null
