@@ -33,7 +33,7 @@ class Cmd:
     
     def add_src(self, src):
         abspath = os.path.abspath(src)
-        self.cmd += " -v %s:/code/MbedFirmware/%s" % (abspath, os.path.basename(abspath))
+        self.cmd += " -v \"%s:/code/MbedFirmware/%s\"" % (abspath, os.path.basename(abspath))
         self.vars += ":%s" % os.path.basename(abspath)
     
     def add_srcs(self, srcs):
@@ -50,7 +50,7 @@ class Cmd:
         self.outputDir = os.path.abspath(outputDir)
     
     def __str__(self):
-        return "%s -e 'SRCS=%s' -v '%s:/output' -e 'COMPILENAME=%s' -e 'COW=%s' -e 'FIG=%s' '%s'" % (self.cmd, self.vars, self.outputDir, self.name, self.cow, self.fig, self.image)
+        return "%s -e \"SRCS=%s\" -v \"%s:/output\" -e \"COMPILENAME=%s\" -e \"COW=%s\" -e \"FIG=%s\" \"%s\"" % (self.cmd, self.vars, self.outputDir, self.name, self.cow, self.fig, self.image)
 
 
 def main():
