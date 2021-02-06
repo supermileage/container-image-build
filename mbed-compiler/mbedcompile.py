@@ -5,7 +5,7 @@ import os
 import argparse
 
 def build_cmd(image, srcs=[]):
-    cmd = "docker run --rm -it"
+    cmd = "docker run --rm -t"
     def add_src(src):
         nonlocal cmd
         abspath = os.path.abspath(srcs)
