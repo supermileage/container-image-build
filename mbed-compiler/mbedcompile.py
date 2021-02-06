@@ -50,7 +50,7 @@ class Cmd:
         self.outputDir = os.path.abspath(outputDir)
     
     def __str__(self):
-        return "%s -e SRCS=%s -v %s:/output -e COMPILENAME=%s -e COW=%s -e FIG=%s %s" % (self.cmd, self.vars, self.outputDir, self.name, self.cow, self.fig, self.image)
+        return "%s -e 'SRCS=%s' -v '%s:/output' -e 'COMPILENAME=%s' -e 'COW=%s' -e 'FIG=%s %s'" % (self.cmd, self.vars, self.outputDir, self.name, self.cow, self.fig, self.image)
 
 
 def main():
